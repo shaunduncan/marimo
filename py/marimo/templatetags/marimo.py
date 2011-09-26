@@ -60,11 +60,14 @@ class MarimoNode(template.Node):
             data['resolved_kwargs'][k] = maybe_resolve(v)
         data['args'] = [maybe_resolve(arg) for arg in self.args]
         data['widget_name'] = self.widget_name
+        # TODO actually write this code
+        data['div_id'] = '123';
 
-        divstr = '<div class="{cls}" data-murl="{murl}" data-json="{json}"></div>'
+        divstr = '<div id="{div_id}" class="{cls}" data-murl="{murl}" data-json="{json}"></div>'
         return divstr.format(
            cls = getattr(settings, 'MARIMO_CLASS', 'marimo class'),
            widget_name = self.widget_name,
            murl = murl,
-           json = urllib.quote(json.dumps(data))
+           json = urllib.quote(json.dumps(data)),
+           div_id = data['div_id']
        )
