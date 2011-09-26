@@ -1,5 +1,6 @@
 // TODO don't assume jquery
 // TODO don't assume JSON
+// TODO fix indentation
 
 $(function() {
     // TODO marimo object to store state; don't tie stuff to DOM
@@ -20,7 +21,34 @@ $(function() {
       }
     });
 
+    // TODO give obj a meaningful name
+    function render(obj, cb) {
+        // TODO accept a render function that will override finish()
+        // template
+        // template_url
+        // context
+        function finish(template, context, cb) {
+            // TODO make not-mustache-specific
+            var html = Mustache.to_html(template, context);
+            cb(null, html);
+        }
+        if (obj.template_url) {
+            // fetch, pass finish as callback
+        }
+        else { finish(obj.template, obj.context, cb); }
+    }
+
     function handle_bulk(data, text_status) {
+      // data is json
+      for (var key in data) {
+        if (!data.hasOwnProperty(key)) {return;}    
+        var widget = data[key];
+        render(widget, function(err, html) {
+            // TODO pay attention to err
+            var div_id = widget.div_id;
+            $('#'+div_id).html(html);
+        });
+      }
     }
 
     for (var url in bulk) {
