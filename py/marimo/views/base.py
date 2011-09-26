@@ -1,0 +1,34 @@
+from django.conf import settings
+from django.core.cache import cache
+
+MARIMO_TIMEOUT = settings.get('MARIMO_TIMEOUT', 60*60*24)
+
+class BaseWidget(object):
+    use_cache = True
+
+    def cacheable(context, *args, **kwargs):
+        '''Probably should be overridden in subclass'''
+        return context
+
+    def uncacheable(request, context, *args, **kwargs):
+        '''Probably should be overridden in subclass'''
+        return context
+
+    def cache_key(*args, **kwargs):
+        '''Must be overridden in subclass'''
+        pass
+
+    def __call__(self, request, *args, **kwargs):
+        #TODO: deal with request kwarg
+        if self.use_cache:
+            cache_key = self.generate_key(*args, **kwargs)
+            context = cache.get(cache_key)
+            if context is None:
+                #TODO: do we want to cache the template?
+                context = {'template': self.template}
+                context = self.cacheable_part(context, *args, **kwargs)
+                cache.set(cache_key, context, MARIMO_TIMEOUT)
+        else:
+                context = {'template': self.template}
+        context = self.uncacheable_part(request, context, *args, **kwargs)
+        return context
