@@ -62,15 +62,16 @@ class MarimoNode(template.Node):
         data['args'] = [maybe_resolve(arg) for arg in self.args]
         data['widget_name'] = self.widget_name
         data['div_id'] = self.generate_div_id()
+        data['murl'] = murl
 
-        divstr = '<div id="{div_id}" class="{cls}" data-murl="{murl}" data-json="{json}"></div>'
-        return divstr.format(
+        divstr = '<div id="{div_id}" class="{cls}"></div>'.format(
            cls = getattr(settings, 'MARIMO_CLASS', 'marimo class'),
-           widget_name = self.widget_name,
-           murl = murl,
-           json = urllib.quote(json.dumps(data)),
            div_id = data['div_id']
-       )
+        )
+        # TODO this is what needs to get written out by middleware...into head
+        script = '<script> marimo.add_widget(%s); </script>' % json.dumps(data)
+
+        return divstr + script
 
     def generate_div_id(self):
         # hopefully this is adequate
