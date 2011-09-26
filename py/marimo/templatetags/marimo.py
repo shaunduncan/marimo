@@ -1,4 +1,5 @@
 import json
+import random
 import urllib
 
 from django import template
@@ -60,8 +61,7 @@ class MarimoNode(template.Node):
             data['resolved_kwargs'][k] = maybe_resolve(v)
         data['args'] = [maybe_resolve(arg) for arg in self.args]
         data['widget_name'] = self.widget_name
-        # TODO actually write this code
-        data['div_id'] = '123';
+        data['div_id'] = self.generate_div_id(self)
 
         divstr = '<div id="{div_id}" class="{cls}" data-murl="{murl}" data-json="{json}"></div>'
         return divstr.format(
@@ -71,3 +71,7 @@ class MarimoNode(template.Node):
            json = urllib.quote(json.dumps(data)),
            div_id = data['div_id']
        )
+
+    def generate_div_id(self):
+        # hopefully this is adequate
+        return '%s_%s' % (self.widget_name, str(random.randint(0,999999)))
