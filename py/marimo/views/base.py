@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.core.cache import cache
 
-MARIMO_TIMEOUT = settings.get('MARIMO_TIMEOUT', 60*60*24)
+MARIMO_TIMEOUT = getattr(settings, 'MARIMO_TIMEOUT', 60*60*24)
 
 class BaseWidget(object):
     use_cache = True

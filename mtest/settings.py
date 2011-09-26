@@ -151,3 +151,4 @@ LOGGING = {
 
 #MARIMO_URL='/marimo/'
 MARIMO_URL='/static/test.json'
+MARIMO_MODULE='mtest.widgets'

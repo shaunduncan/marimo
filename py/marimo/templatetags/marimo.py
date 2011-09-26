@@ -61,7 +61,7 @@ class MarimoNode(template.Node):
             data['resolved_kwargs'][k] = maybe_resolve(v)
         data['args'] = [maybe_resolve(arg) for arg in self.args]
         data['widget_name'] = self.widget_name
-        data['div_id'] = self.generate_div_id(self)
+        data['div_id'] = self.generate_div_id()
 
         divstr = '<div id="{div_id}" class="{cls}" data-murl="{murl}" data-json="{json}"></div>'
         return divstr.format(

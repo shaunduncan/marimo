@@ -4,15 +4,15 @@ from django.conf import settings
 from django.http import Http404, HttpResponse
 from django.views.generic.base import View
 
-from utils import smart_import
+from marimo.utils import smart_import
 
-_marimo_widgets = __import__(settings.MARIMO_MODULE).registry
+_marimo_widgets = smart_import(settings.MARIMO_REGISTRY)
 
 
 class MarimoRouter(View):
     def get(self, request):
         try:
-            bulk = json.loads(request.GET.get['bulk'])
+            bulk = json.loads(request.GET['bulk'])
         except KeyError:
             raise Http404()
         else:
