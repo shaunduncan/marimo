@@ -18,15 +18,10 @@ Widget.prototype.update = function(data) {
 };
 
 Widget.prototype.render = function() {
-    function finish(template, context) {
-        // TODO make not-mustache-specific
-        var html = Mustache.to_html(template, context);
-        $('#'+this.id).html(html);
-    }
-    if (this.data.template_url) {
-        // TODO fetch, pass finish as callback
-    }
-    else { finish(this.data.template, this.data.context); }
+    // TODO support a template_url
+    // TODO make not-mustache-specific
+    var html = Mustache.to_html(this.data.template, this.data.context);
+    $('#'+this.id).html(html);
 };
 
 
@@ -41,10 +36,11 @@ BatchRequest.prototype.add = function(payload) {
 };
 
 BatchRequest.prototype.make_request = function(cb) {
+   var that = this;
    $.ajax(this.url, {
      data: {bulk:JSON.stringify(this.payloads)},
      dataType: 'json',
-     success: function(data) { cb(url, data); },
+     success: function(data) { cb(that.url, data); },
      error: function() {
        console.log('error processing bulk request '+this.url+' with json '+JSON.stringify(this.payloads));
      }
@@ -59,29 +55,35 @@ function Marimo() {
 }
 
 Marimo.prototype.add_widget = function(widget_args) {
+    console.log('adding widget: '+widget_args);
     // TODO lock request objs while they are making a request
     this.widgets_in++;
-    setTimout(function() {
+    var that = this;
+    setTimeout(function() {
         var url = widget_args.murl;
-        if (!this.requests[url]) {
-            this.requests[url] = new BatchRequest(url);
+        if (!that.requests[url]) {
+            that.requests[url] = new BatchRequest(url);
         }
-        this.requests[url].add(widget_args);
+        that.requests[url].add(widget_args);
         var widget = new Widget(widget_args);
-        this.widgets[widget.id] = widget;
-        this.widgets_in--;
+        that.widgets[widget.id] = widget;
+        that.widgets_in--;
    }, 1);
 };
 
 Marimo.prototype.make_request = function() {
     if (this.widgets_in > 0) {
-        setTimeout(this.make_request, 100);
+        console.log('NOT DONE COLLECTING WIDGET URLS');
+        var that = this;
+        setTimeout(function() { that.make_request() }, 100);
         return;
     }
+    console.log('making requests');
     for (var key in this.requests) {
         if (!this.requests.hasOwnProperty(key)) { return; }
         var batch = this.requests[key];
-        batch.make_request(this.handle_response);
+        var that = this;
+        batch.make_request(function() { that.handle_response() });
     }
 };
 
@@ -98,5 +100,6 @@ Marimo.prototype.handle_response = function(url, data) {
 var marimo = new Marimo();
 
 $(function() {
+    console.log('ON READY');
     marimo.make_request();
 });

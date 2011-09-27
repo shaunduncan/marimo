@@ -56,9 +56,9 @@ class MarimoNode(template.Node):
                 return str(var.resolve(context))
 
         data = {}
-        data['resolved_kwargs'] = {}
+        data['kwargs'] = {}
         for (k,v) in self.kwargs.items():
-            data['resolved_kwargs'][k] = maybe_resolve(v)
+            data['kwargs'][k] = maybe_resolve(v)
         data['args'] = [maybe_resolve(arg) for arg in self.args]
         data['widget_name'] = self.widget_name
         data['div_id'] = self.generate_div_id()
