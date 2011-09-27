@@ -69,7 +69,11 @@ class MarimoNode(template.Node):
            div_id = data['div_id']
         )
         # TODO this is what needs to get written out by middleware...into head
-        script = '<script> marimo.add_widget(%s); </script>' % json.dumps(data)
+        if (getattr(settings, 'MARIMO_FAST', False)):
+            context['marimo_widgets'].append(data)
+            script = ''
+        else:
+            script = '<script> marimo.add_widget(%s); </script>' % json.dumps(data)
 
         return divstr + script
 

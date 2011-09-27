@@ -96,6 +96,7 @@ TEMPLATE_LOADERS = (
 )
 
 MIDDLEWARE_CLASSES = (
+    'marimo.middleware.Marimo',
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -111,6 +112,8 @@ TEMPLATE_DIRS = (
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
 )
+
+TEMPLATE_CONTEXT_PROCESSORS = ('marimo.middleware.context_processor',)
 
 INSTALLED_APPS = (
     'django.contrib.auth',
@@ -151,3 +154,4 @@ LOGGING = {
 
 MARIMO_URL='/marimo/'
 MARIMO_REGISTRY='mtest.widgets.registry'
+MARIMO_FAST = True
