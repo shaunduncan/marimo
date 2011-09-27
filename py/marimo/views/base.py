@@ -26,10 +26,10 @@ class BaseWidget(object):
             context = cache.get(cache_key)
             if context is None:
                 #TODO: do we want to cache the template?
-                context = {'template': self.template}
+                context = {}
                 context = self.cacheable_part(context, *args, **kwargs)
                 cache.set(cache_key, context, MARIMO_TIMEOUT)
         else:
                 context = {'template': self.template}
         context = self.uncacheable_part(request, context, *args, **kwargs)
-        return context
+        return {'context':context, 'template':self.template}
