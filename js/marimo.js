@@ -18,10 +18,13 @@ Widget.prototype.update = function(data) {
 };
 
 Widget.prototype.render = function() {
+    var that = this;
     // TODO support a template_url
-    // TODO make not-mustache-specific
-    var html = Mustache.to_html(this.data.template, this.data.context);
-    $('#'+this.id).html(html);
+    $(function() {
+        // TODO make not-mustache-specific
+        var html = Mustache.to_html(that.data.template, that.data.context);
+        $('#'+that.id).html(html);
+    });
 };
 
 
@@ -75,12 +78,13 @@ Marimo.prototype.add_widgets = function(widgets) {
         if (!widgets.hasOwnProperty(key)){return;}
         this.add_widget(widgets[key]);
     }
+    this.make_request();
 };
 
 Marimo.prototype.make_request = function() {
     if (this.widgets_in > 0) {
         var that = this;
-        setTimeout(function() { that.make_request() }, 100);
+        setTimeout(function() { that.make_request() }, 1);
         return;
     }
     for (var key in this.requests) {
@@ -104,5 +108,6 @@ Marimo.prototype.handle_response = function(url, data) {
 var marimo = new Marimo();
 
 $(function() {
-    marimo.make_request();
+    // switching to middleware version
+    // marimo.make_request();
 });
