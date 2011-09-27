@@ -155,3 +155,6 @@ LOGGING = {
 MARIMO_URL='/marimo/'
 MARIMO_REGISTRY='mtest.widgets.registry'
 MARIMO_FAST = True
+MARIMO_TEMPLATE_DIRS = (
+     '%s/templates/marimo' % BASE_DIR,
+)

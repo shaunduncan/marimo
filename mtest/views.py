@@ -2,12 +2,15 @@ from django.template import RequestContext
 from django.shortcuts import render_to_response
 
 from marimo.views.base import BaseWidget
+from marimo.template_loader import template_loader
+
 
 def main(request):
     return render_to_response('main.html', RequestContext(request))
 
 class test_widget(BaseWidget):
-    template = 'hello {{ name }} are you {{ status }}? if not i will {{ action }} you.'
+    #template = 'hello {{ name }} are you {{ status }}? if not i will {{ action }} you.'
+    template = template_loader.load('test_widget.html')
     use_cache = True
 
     def cache_key(self, *args, **kwargs):
