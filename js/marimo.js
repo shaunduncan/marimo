@@ -12,6 +12,7 @@ function Widget(data) {
 Widget.prototype.update = function(data) {
     // merge data with this's
     // TODO make this proper update, for now overwrite
+    console.log(data)
     this.data = data;
     this.render();
     // TODO future excitement
@@ -20,6 +21,7 @@ Widget.prototype.update = function(data) {
 Widget.prototype.render = function() {
     // TODO support a template_url
     // TODO make not-mustache-specific
+    console.log(this.data)
     var html = Mustache.to_html(this.data.template, this.data.context);
     $('#'+this.id).html(html);
 };
@@ -37,6 +39,7 @@ BatchRequest.prototype.add = function(payload) {
 
 BatchRequest.prototype.make_request = function(cb) {
    var that = this;
+   console.log("making request")
    $.ajax(this.url, {
      data: {bulk:JSON.stringify(this.payloads)},
      dataType: 'json',
@@ -83,16 +86,20 @@ Marimo.prototype.make_request = function() {
         if (!this.requests.hasOwnProperty(key)) { return; }
         var batch = this.requests[key];
         var that = this;
-        batch.make_request(function() { that.handle_response() });
+        batch.make_request(function(url, data) { that.handle_response(url, data) });
     }
 };
 
 Marimo.prototype.handle_response = function(url, data) {
+    console.log("handling")
+    console.log(url)
+    console.log(data)
     delete this.requests[url];
-    for (var key in this.widgets) {
-        if (!this.widgets.hasOwnProperty(key)) {return;}
-        var widget = this.widgets[key];
-        widget.update(data);
+    for (var datum in data) {
+        if (!data.hasOwnProperty(datum)) {return}
+        var widget_data = data[datum];
+        console.log('WIDGET DATA :' + widget_data);
+        this.widgets[widget_data.div_id].update(widget_data);
     }
     // tell widgets to update based on what is in data.
 };
