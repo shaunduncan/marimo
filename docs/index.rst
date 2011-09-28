@@ -5,6 +5,13 @@
 
 Welcome to marimo's documentation!
 ==================================
+marimo is a framework for creating asynchronously loading widgets.
+
+A marimo installation consists of three parts.
+#) A page that contains marimo widgets
+#) Javasctipt that manages and loads widgets in the page
+#) A backend api that provides widgets with the templates and context for them to use in rendering
+
 
 Contents:
 
