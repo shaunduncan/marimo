@@ -12,7 +12,7 @@ A marimo installation consists of three parts.
 #) Javasctipt that manages and loads widgets in the page
 #) A backend api that provides widgets with the templates and context for them to use in rendering
 
-.. image:: docs/_static/marimo_flow.png
+.. image:: marimo/raw/master/docs/_static/marimo_flow.png
 .. _(Edit this image on Google Docs): https://docs.google.com/drawings/d/1OCM39SPWM0q0wuEnCUnzCRLwIDi9Km2uaSiaz9thQJc/edit?hl=en_US
 
 
