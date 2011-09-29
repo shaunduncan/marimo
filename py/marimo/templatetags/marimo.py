@@ -1,6 +1,5 @@
 import json
 import random
-import urllib
 
 from django import template
 from django.conf import settings
@@ -61,12 +60,12 @@ class MarimoNode(template.Node):
             data['kwargs'][k] = maybe_resolve(v)
         data['args'] = [maybe_resolve(arg) for arg in self.args]
         data['widget_name'] = self.widget_name
-        data['div_id'] = self.generate_div_id()
+        data['id'] = self.generate_id()
         data['murl'] = murl
 
-        divstr = '<div id="{div_id}" class="{cls}"></div>'.format(
+        divstr = '<div id="{id}" class="{cls}"></div>'.format(
            cls = getattr(settings, 'MARIMO_CLASS', 'marimo class'),
-           div_id = data['div_id']
+           id = data['id']
         )
         # TODO this is what needs to get written out by middleware...into head
         if (getattr(settings, 'MARIMO_FAST', False)):
@@ -77,6 +76,7 @@ class MarimoNode(template.Node):
 
         return divstr + script
 
-    def generate_div_id(self):
+    def generate_id(self):
+        """ a widget's id is its name + a randint """
         # hopefully this is adequate
         return '%s_%s' % (self.widget_name, str(random.randint(0,999999)))

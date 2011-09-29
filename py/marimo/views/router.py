@@ -10,7 +10,13 @@ _marimo_widgets = smart_import(settings.MARIMO_REGISTRY)
 
 
 class MarimoRouter(View):
+    """
+    MarimoRouter splits up the request into individual widget packages and
+    sends them to the handlers defined int he MARIMO_REGISTY
+    """
+
     def get(self, request):
+        """ for a get request the bulk data is in request.GET """
         try:
             bulk = json.loads(request.GET['bulk'])
         except KeyError:
@@ -19,6 +25,7 @@ class MarimoRouter(View):
             return self.route(request, bulk)
 
     def route(self, request, bulk):
+        """ this actually does the routing """
         response = []
         # TODO sanitize bulk
         for widget in bulk:

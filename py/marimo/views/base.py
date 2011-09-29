@@ -1,10 +1,10 @@
 from django.conf import settings
 from django.core.cache import cache
-from django.views.generic.base import View
 
 MARIMO_TIMEOUT = getattr(settings, 'MARIMO_TIMEOUT', 60*60*24)
 
 class BaseWidget(object):
+    # TODO: make this a view by wrapping the __call__
     use_cache = True
 
     def cacheable(self, context, *args, **kwargs):
@@ -20,7 +20,10 @@ class BaseWidget(object):
         pass
 
     def __call__(self, request, *args, **kwargs):
-        #TODO: deal with request kwarg
+        """ 
+        Splits up work into cachable and uncacheable parts 
+        """
+            
         if self.use_cache:
             cache_key = self.cache_key(*args, **kwargs)
             context = cache.get(cache_key)
