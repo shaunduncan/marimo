@@ -1,6 +1,6 @@
 .. _marimo:
 
-little green balls
+Marimo
 ==================
 This is a brief description of ``marimo``
 
