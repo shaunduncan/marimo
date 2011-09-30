@@ -9,6 +9,7 @@ from django import template
 import mock
 
 from marimo.views import MarimoRouter
+from marimo.views import BaseWidget
 
 widgets = {
         'test': lambda x,y,z: {'key':'value'},
@@ -82,3 +83,26 @@ class TestRouterView(TestCase):
         self.assertEquals(response[0]['status'], 'WidgetNotFound')
 
     # TODO test fetching a callable with smart_import. this is too gnarly for now.
+
+class TestBaseView(TestCase):
+    def setUp(self):
+        self.base = BaseWidget()
+        self.base.cache_key = mock.Mock()
+        self.base.cacheable = mock.Mock()
+        self.base.uncacheable = mock.Mock()
+
+    def tearDown(self):
+        pass
+
+    def test_base_no_use_cache(self):
+        self.base.use_cache = False
+        self.base.template = ''
+        self.base('request', 'arg', kwarg='kwval')
+        self.base.uncacheable.assert_called_with('request', {'template':self.base.template}, 'arg', kwarg='kwval')
+        self.assertFalse(self.base.cacheable.called)
+
+    @mock.patch('marimo.views.base.cache')
+    def test_base_cache_hit(self, mock_cache):
+        pass
+
+
