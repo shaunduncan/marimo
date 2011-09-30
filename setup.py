@@ -2,8 +2,8 @@ from setuptools import setup, find_packages
 setup(
     name = "marimo",
     version = "0.1",
-    packages = find_packages('py'),
-    package_dir = {'': 'py/marimo'},
+    packages = find_packages(exclude='mtest'),
+    package_dir = {'': 'py'},
     py_modules = ['marimo.views'],
     author = "Cox Media Group",
     author_email = "opensource@coxinc.com",
