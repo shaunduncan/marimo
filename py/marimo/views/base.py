@@ -60,6 +60,6 @@ class BaseWidget(object):
                 #TODO: do we want to cache the template?
                 self.update_cache(*args, **kwargs)
         else:
-                context = {'template': self.template}
+                context = {}
         context = self.uncacheable(request, context, *args, **kwargs)
         return {'context':context, 'template':self.template}
