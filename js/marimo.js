@@ -2,8 +2,7 @@
 // TODO don't assume JSON
 // TODO fix indentation
 function Widget(data) {
-    // TODO div_id -> widget_id
-    this.id = data.div_id;
+    this.id = data.id;
     // TODO write
     this.args = data;
     this.data = {};
@@ -34,7 +33,7 @@ function BatchRequest(url) {
 };
 
 BatchRequest.prototype.add = function(payload) {
-    // TODO make more resilient/less trusting in the face of corrupted div_ids etc
+    // TODO make more resilient/less trusting in the face of corrupted ids etc
     this.payloads.push(payload);
 };
 
@@ -100,7 +99,7 @@ Marimo.prototype.handle_response = function(url, data) {
     for (var datum in data) {
         if (!data.hasOwnProperty(datum)) {return}
         var widget_data = data[datum];
-        this.widgets[widget_data.div_id].update(widget_data);
+        this.widgets[widget_data.id].update(widget_data);
     }
     // tell widgets to update based on what is in data.
 };

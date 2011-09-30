@@ -1,6 +1,7 @@
 import json
+import re
 
-MARIMO_PLACEHOLDER = "${MARIMO}"
+MARIMO_PLACEHOLDER = re.compile("${MARIMO}")
 
 class Marimo(object):
     """ 
@@ -16,7 +17,8 @@ class Marimo(object):
         # TODO: check to maker sure the placeholder exists
         # TODO: add_widgets shouldn't make the request
         code = "<script> marimo.add_widgets(%s); </script>" %json.dumps(request.marimo_widgets)
-        response.content = response.content.replace(MARIMO_PLACEHOLDER, code)
+
+        response.content = MARIMO_PLACEHOLDER.sub(code, response.content)
         return response
 
 def context_processor(request):
