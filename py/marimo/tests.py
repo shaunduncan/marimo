@@ -87,6 +87,7 @@ class TestRouterView(TestCase):
 class TestBaseView(TestCase):
     def setUp(self):
         self.base = BaseWidget()
+        self.base.template = 'some_template'
         self.base.cache_key = mock.Mock()
         self.base.cacheable = mock.Mock()
         self.base.uncacheable = mock.Mock()
@@ -96,13 +97,22 @@ class TestBaseView(TestCase):
 
     def test_base_no_use_cache(self):
         self.base.use_cache = False
-        self.base.template = ''
         self.base('request', 'arg', kwarg='kwval')
-        self.base.uncacheable.assert_called_with('request', {'template':self.base.template}, 'arg', kwarg='kwval')
+        self.base.uncacheable.assert_called_with('request', {},  'arg', kwarg='kwval')
         self.assertFalse(self.base.cacheable.called)
 
     @mock.patch('marimo.views.base.cache')
-    def test_base_cache_hit(self, mock_cache):
-        pass
-
-
+    def test_base_cache_miss(self, mock_cache):
+        mock_cache.get.return_value = None
+        self.base.use_cache = True
+        self.base('request', 'arg', kwarg='kwval')
+        self.assertTrue(mock_cache.set.called)
+        self.assertTrue(self.base.cacheable.called)
+        self.assertTrue(self.base.uncacheable.called)
+    
+    @mock.patch('marimo.views.base.cache')
+    def test_base_cache_miss(self, mock_cache):
+        self.base.use_cache = True
+        self.base('request', 'arg', kwarg='kwval')
+        self.assertFalse(self.base.cacheable.called)
+        self.assertTrue(self.base.uncacheable.called)
