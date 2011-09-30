@@ -40,7 +40,7 @@ class BaseWidget(object):
         Must be overridden in subclass if use_cache=True
         Generates the cache key that this widget will use based on  *args and **kwargs
         """
-        pass
+        raise NotImplementedError
     
     def update_cache(self, *args, **kwargs):
         """ call this with *args and **kwargs like a request to update the cache """
