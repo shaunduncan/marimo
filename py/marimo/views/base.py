@@ -47,6 +47,7 @@ class BaseWidget(object):
         cache_key = self.cache_key(*args, **kwargs)
         context = self.cacheable(dict(), *args, **kwargs)
         cache.set(cache_key, context, MARIMO_TIMEOUT)
+        return context
 
     def __call__(self, request, *args, **kwargs):
         """ 
@@ -58,7 +59,7 @@ class BaseWidget(object):
             context = cache.get(cache_key)
             if context is None:
                 #TODO: do we want to cache the template?
-                self.update_cache(*args, **kwargs)
+                context = self.update_cache(*args, **kwargs)
         else:
                 context = {}
         context = self.uncacheable(request, context, *args, **kwargs)
