@@ -77,7 +77,6 @@ Marimo.prototype.add_widgets = function(widgets) {
         if (!widgets.hasOwnProperty(key)){return;}
         this.add_widget(widgets[key]);
     }
-    this.make_request();
 };
 
 Marimo.prototype.make_request = function() {
