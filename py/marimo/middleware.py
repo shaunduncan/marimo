@@ -16,6 +16,9 @@ class Marimo(object):
         """ generates a script to register and load the widgets with marimo """
         # TODO: check to maker sure the placeholder exists
         # TODO: add_widgets shouldn't make the request
+        if not hasattr(request, 'marimo_widgets'):
+            # skip this
+            return response
         code = "marimo.add_widgets(%s);" %json.dumps(request.marimo_widgets)
 
         response.content = MARIMO_PLACEHOLDER.sub(code, response.content)

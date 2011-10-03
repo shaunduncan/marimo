@@ -39,12 +39,13 @@ BatchRequest.prototype.add = function(payload) {
 
 BatchRequest.prototype.make_request = function(cb) {
    var that = this;
-   marimo.$.ajax(this.url, {
+   marimo.$.ajax({
+     url: this.url,
      data: {bulk:JSON.stringify(this.payloads)},
      dataType: 'json',
      success: function(data) { cb(that.url, data); },
      error: function() {
-       console.log('error processing bulk request '+this.url+' with json '+JSON.stringify(this.payloads));
+       console.log('error processing bulk request '+that.url+' with json '+JSON.stringify(that.payloads));
      }
    });
 };
