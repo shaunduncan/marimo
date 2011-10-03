@@ -30,6 +30,10 @@ TestCase.prototype.run = function() {
                     }
                 };
 
+                var Marimo = window.Marimo;
+
+                window.marimo = new Marimo(window.$);
+
                 test(testcase);
                 console.log('.');
             }
