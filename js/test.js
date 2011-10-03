@@ -48,7 +48,7 @@ marimo_obj_tc.add(function test_add_widget(testcase) {
     var marimo = window.marimo;
     var widget_args = {
         murl: "/some/url",
-        div_id: "123"
+        id: "123"
     };
     marimo.add_widget(widget_args);
     assert.ok(marimo.widgets['123'], 'widget 123 added to marimo.widgets');
@@ -58,11 +58,10 @@ marimo_obj_tc.add(function test_add_widget(testcase) {
 marimo_obj_tc.add(function test_add_widgets(testcase) {
    var window = testcase.window;
    var marimo = window.marimo;
-   marimo.make_request = function() { };
    var widgets = [
-       {murl:'/some/url0', div_id:'0'},
-       {murl:'some/url1', div_id:'1'},
-       {murl:'some/url1', div_id:'2'}
+       {murl:'/some/url0', id:'0'},
+       {murl:'some/url1', id:'1'},
+       {murl:'some/url1', id:'2'}
    ];
    marimo.add_widgets(widgets);
    assert.equal(Object.keys(marimo.widgets).length, 3, 'see 3 widgets in marimo');
@@ -78,11 +77,12 @@ marimo_obj_tc.add(function test_make_request(testcase) {
         requests_made.push([url,settings]);
     };
     var widgets = [
-        {murl:'/some/url0', div_id:'0'},
-        {murl:'/some/url1', div_id:'1'},
-        {murl:'/some/url1', div_id:'2'}
+        {murl:'/some/url0', id:'0'},
+        {murl:'/some/url1', id:'1'},
+        {murl:'/some/url1', id:'2'}
     ];
     marimo.add_widgets(widgets);
+    marimo.make_request();
     assert.equal(requests_made.length, 2, 'two requests were made');
     var urls_requested = [requests_made[0][0], requests_made[1][0]].sort();
     assert.deepEqual(urls_requested, ['/some/url0', '/some/url1'], 'requests made to appropriate urls');
@@ -92,21 +92,20 @@ marimo_obj_tc.add(function test_handle_response(testcase) {
     var window = testcase.window;
     var marimo = window.marimo;
     var widgets = [
-        {murl:'/some/url0', div_id:'0'},
-        {murl:'/some/url1', div_id:'1'},
-        {murl:'/some/url1', div_id:'2'}
+        {murl:'/some/url0', id:'0'},
+        {murl:'/some/url1', id:'1'},
+        {murl:'/some/url1', id:'2'}
     ];
-    // TODO add_widgets should NOT call make_request
-    widgets.forEach(function(w) { marimo.add_widget(w); });
+    marimo.add_widgets(widgets);
     var url = '/some/url1';
     var data = [
         {
-            div_id:'1',
+            id:'1',
             template:"hi {{ name }}",
             context: { name: 'camus' },
         },
         {
-            div_id:'2',
+            id:'2',
             template:"is the sky {{ status }}?",
             context: { status: 'alphabetical' }
         }
