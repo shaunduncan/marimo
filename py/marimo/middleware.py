@@ -16,11 +16,13 @@ class Marimo(object):
         """ generates a script to register and load the widgets with marimo """
         # TODO: check to maker sure the placeholder exists
         # TODO: add_widgets shouldn't make the request
-        code = "<script> marimo.add_widgets(%s); </script>" %json.dumps(request.marimo_widgets)
+        code = "marimo.add_widgets(%s);" %json.dumps(request.marimo_widgets)
 
         response.content = MARIMO_PLACEHOLDER.sub(code, response.content)
         return response
 
 def context_processor(request):
     """ sticks marimo_widgets into the template context """
-    return { 'marimo_widgets' : request.marimo_widgets }
+    if hasattr(request, 'marimo_widgets'):
+        return { 'marimo_widgets' : request.marimo_widgets }
+    return {}
