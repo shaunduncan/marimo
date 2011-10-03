@@ -104,8 +104,3 @@ Marimo.prototype.handle_response = function(url, data) {
 };
 
 var marimo = new Marimo();
-
-$(function() {
-    // switching to middleware version
-    // marimo.make_request();
-});
