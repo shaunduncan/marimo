@@ -19,10 +19,10 @@ Widget.prototype.update = function(data) {
 Widget.prototype.render = function() {
     var that = this;
     // TODO support a template_url
-    $(function() {
+    marimo.$(function() {
         // TODO make not-mustache-specific
         var html = Mustache.to_html(that.data.template, that.data.context);
-        $('#'+that.id).html(html);
+        marimo.$('#'+that.id).html(html);
     });
 };
 
@@ -39,7 +39,7 @@ BatchRequest.prototype.add = function(payload) {
 
 BatchRequest.prototype.make_request = function(cb) {
    var that = this;
-   $.ajax(this.url, {
+   marimo.$.ajax(this.url, {
      data: {bulk:JSON.stringify(this.payloads)},
      dataType: 'json',
      success: function(data) { cb(that.url, data); },
@@ -50,10 +50,11 @@ BatchRequest.prototype.make_request = function(cb) {
 };
 
 
-function Marimo() {
+function Marimo($) {
     this.requests = {};
     this.widgets = {};
     this.widgets_in = 0;
+    this.$ = $;
 }
 
 Marimo.prototype.add_widget = function(widget_args) {
