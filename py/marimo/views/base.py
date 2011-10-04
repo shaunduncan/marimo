@@ -52,6 +52,14 @@ class BaseWidget(object):
         cache.set(cache_key, response, MARIMO_TIMEOUT)
         return response
 
+    def on_error(self, ex, data, request, *args, **kwargs):
+        """ override this to provide custom exception handling """
+        # TODO fix tracebacks
+        if getattr(settings, 'DEBUG', False):
+            raise ex
+        data['status'] = 'failed'
+        return data
+
     def __call__(self, request, *args, **kwargs):
         """ 
         Splits up work into cachable and uncacheable parts 

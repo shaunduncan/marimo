@@ -51,9 +51,7 @@ class MarimoRouter(View):
                 try:
                     data.update(view(request, *widget['args'], **widget['kwargs']))
                 except Exception, e:
-                    if getattr(settings, 'DEBUG', False):
-                        raise e
-                    data['status'] = 'failed'
+                    data = view.on_error(e, data, request, *widget['args'], **widget['kwargs'])
                 else:
                     data['status'] = 'succeeded'
             finally:
