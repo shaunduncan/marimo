@@ -18,9 +18,10 @@ class MarimoRouter(View):
     sends them to the handlers defined int he MARIMO_REGISTY
     """
 
+    # TODO store widget registry as class variable so it can be overidden in instances
+
     def get(self, request):
         """ for a get request the bulk data is in request.GET """
-        print "MarimoRounter.get"
         try:
             bulk = json.loads(request.GET['bulk'])
         except KeyError:
@@ -30,7 +31,6 @@ class MarimoRouter(View):
 
     def route(self, request, bulk):
         """ this actually does the routing """
-        print "MarimoRouter.route"
         response = []
         # TODO sanitize bulk
         for widget in bulk:
