@@ -20,6 +20,7 @@ class MarimoRouter(View):
 
     def get(self, request):
         """ for a get request the bulk data is in request.GET """
+        print "MarimoRounter.get"
         try:
             bulk = json.loads(request.GET['bulk'])
         except KeyError:
@@ -29,9 +30,11 @@ class MarimoRouter(View):
 
     def route(self, request, bulk):
         """ this actually does the routing """
+        print "MarimoRouter.route"
         response = []
         # TODO sanitize bulk
         for widget in bulk:
+            print "doing: %s"%widget['id']
             # Try to get a callable from the dict... if it's not imported deal with it
             data = { 'id': widget['id'], }
             try:
@@ -53,5 +56,18 @@ class MarimoRouter(View):
                     data['status'] = 'succeeded'
             finally:
                 response.append(data)
+        
+        return self.build_response(request, response)
 
-        return HttpResponse(json.dumps(response), mimetype='application/json')
+    def build_response(self, request, data):
+        as_json = json.dumps(data)
+        if request.REQUEST.get('format') == 'jsonp' and request.REQUEST.get('callback'):
+            mimetype = 'text/javascript'
+            callback = request.REQUEST.get('callback')
+            as_json = "{0}({1});".format(callback, as_json)
+        else:
+            mimetype = 'application/json'
+
+        return HttpResponse(as_json, mimetype=mimetype)
+
+

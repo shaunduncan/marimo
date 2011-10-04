@@ -22,18 +22,18 @@ class BaseWidget(object):
 
     use_cache = True
 
-    def cacheable(self, context, *args, **kwargs):
+    def cacheable(self, response, *args, **kwargs):
         """
         Should be overriden in subclasses if use_cache=True
-        should update context with cacheable information and return it
+        should update response with cacheable information and return it
         """
-        return context
+        return response
 
-    def uncacheable(self, request, context, *args, **kwargs):
+    def uncacheable(self, request, response, *args, **kwargs):
         """
         should update context based on request specific information and return it
         """
-        return context
+        return response
 
     def cache_key(self, *args, **kwargs):
         """
@@ -42,25 +42,26 @@ class BaseWidget(object):
         """
         raise NotImplementedError
     
-    def update_cache(self, *args, **kwargs):
+    def update_cache(self, response, *args, **kwargs):
         """ call this with *args and **kwargs like a request to update the cache """
         cache_key = self.cache_key(*args, **kwargs)
-        context = self.cacheable(dict(), *args, **kwargs)
-        cache.set(cache_key, context, MARIMO_TIMEOUT)
-        return context
+        response = self.cacheable(response, *args, **kwargs)
+        cache.set(cache_key, response, MARIMO_TIMEOUT)
+        return response
 
     def __call__(self, request, *args, **kwargs):
         """ 
         Splits up work into cachable and uncacheable parts 
         """
-            
+
         if self.use_cache:
             cache_key = self.cache_key(*args, **kwargs)
-            context = cache.get(cache_key)
-            if context is None:
-                #TODO: do we want to cache the template?
-                context = self.update_cache(*args, **kwargs)
+            response = cache.get(cache_key)
+            if response is None:
+                response = {'template':self.template, 'context':dict()}
+                response = self.update_cache(response, *args, **kwargs)
         else:
-                context = {}
-        context = self.uncacheable(request, context, *args, **kwargs)
-        return {'context':context, 'template':self.template}
+            response = {'template':self.template, 'context':dict()}
+
+        response = self.uncacheable(request, response, *args, **kwargs)
+        return response
