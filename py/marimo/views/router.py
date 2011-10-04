@@ -40,6 +40,8 @@ class MarimoRouter(View):
             try:
                 view = _marimo_widgets[widget['widget_name']]
             except KeyError:
+                print widget['widget_name']
+                print _marimo_widgets
                 data['status'] = 'WidgetNotFound'
             else:
                 if not callable(view):
@@ -56,7 +58,7 @@ class MarimoRouter(View):
                     data['status'] = 'succeeded'
             finally:
                 response.append(data)
-        
+
         return self.build_response(request, response)
 
     def build_response(self, request, data):
@@ -69,5 +71,3 @@ class MarimoRouter(View):
             mimetype = 'application/json'
 
         return HttpResponse(as_json, mimetype=mimetype)
-
-

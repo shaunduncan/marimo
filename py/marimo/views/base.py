@@ -1,8 +1,11 @@
 """
 BaseWidget is the a base class that can be extended to make marimo widget handlers 
 """
+import json
+
 from django.conf import settings
 from django.core.cache import cache
+from django.http import HttpResponse
 
 MARIMO_TIMEOUT = getattr(settings, 'MARIMO_TIMEOUT', 60*60*24)
 
@@ -65,3 +68,13 @@ class BaseWidget(object):
 
         response = self.uncacheable(request, response, *args, **kwargs)
         return response
+
+    @classmethod
+    def as_view(cls):
+        """ as_view can be used to create views for marimo widgets only reccomended for debugging """
+        def view(request):
+            inst = cls()
+            data = json.loads(request.GET['data'])
+            response = inst(request, *data['args'], **data['kwargs'])
+            return HttpResponse(json.dumps(response), mimetype='application/json')
+        return view
