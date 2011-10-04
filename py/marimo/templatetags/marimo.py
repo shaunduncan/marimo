@@ -6,6 +6,8 @@ from django.conf import settings
 
 register = template.Library()
 
+# TODO allow template tag to accept a string for widget constructor eg AdWidget
+
 @register.tag(name="marimo")
 def marimo(parser, token):
     """

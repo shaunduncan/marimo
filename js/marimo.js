@@ -1,31 +1,32 @@
 // TODO don't assume jquery
 // TODO don't assume JSON
 // TODO fix indentation
-function Widget(data) {
-    this.id = data.id;
-    // TODO write
-    this.args = data;
-    this.data = {};
-}
-
-Widget.prototype.update = function(data) {
-    // merge data with this's
-    // TODO make this proper update, for now overwrite
-    this.data = data;
-    this.render();
-    // TODO future excitement
-};
-
-Widget.prototype.render = function() {
-    var that = this;
-    // TODO support a template_url
-    marimo.$(function() {
+var widget = {
+    init: function(data) {
+        this.id = data.id;
+        // TODO write
+        this.args = data;
+        this.data = {};
+        return this;
+    },
+    update: function(data) {
+        // merge data with this's
+        // TODO make this proper update, for now overwrite
+        this.data = data;
+        this.render();
+        // TODO future excitement
+    },
+    render: function() {
+        var that = this;
+        // TODO support a template_url
         // TODO make not-mustache-specific
         var html = Mustache.to_html(that.data.template, that.data.context);
-        marimo.$('#'+that.id).html(html);
-    });
+        marimo.$(function() {
+            // Actually modify the DOM. note that this is the only time we care about onready.
+            marimo.$('#'+that.id).html(html);
+        });
+    }
 };
-
 
 function BatchRequest(url) {
     this.payloads = [];
@@ -68,8 +69,14 @@ Marimo.prototype.add_widget = function(widget_args) {
             that.requests[url] = new BatchRequest(url);
         }
         that.requests[url].add(widget_args);
-        var widget = new Widget(widget_args);
-        that.widgets[widget.id] = widget;
+        // TODO please fucking namespace marimo shit for the love of god
+        var widget_prototype = window[widget_args['widget_prototype']];
+        if (!widget_prototype) {
+            widget_prototype = widget;
+        }
+        // TODO delete constructor arg from widget_args?
+        var w = Object.create(widget_prototype).init(widget_args);
+        that.widgets[w.id] = w;
         that.widgets_in--;
    }, 1);
 };
