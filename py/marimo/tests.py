@@ -42,6 +42,7 @@ class TestTag(TestCase):
 
 class TestRouterView(TestCase):
     def setUp(self):
+        self.request = mock.Mock()
         self.router = MarimoRouter()
 
     def tearDown(self):
@@ -56,7 +57,7 @@ class TestRouterView(TestCase):
         bulk = [
                 {'id':'1', 'widget_name':'test', 'args':['one', 'two'], 'kwargs':{}}
         ]
-        self.router.route(None, bulk)
+        self.router.route(self.request, bulk)
         response = json.loads(http_response.call_args[0][0])
         self.assertEqual(len(response), 1)
         self.assertEqual(response[0]['status'], 'succeeded')
@@ -68,7 +69,7 @@ class TestRouterView(TestCase):
         bulk = [
                 {'id':'1', 'widget_name':'failure', 'args':['one', 'two'], 'kwargs':{}}
         ]
-        self.router.route(None, bulk)
+        self.router.route(self.request, bulk)
         response = json.loads(http_response.call_args[0][0])
         self.assertEquals(response[0]['status'], 'failed')
 
@@ -78,7 +79,7 @@ class TestRouterView(TestCase):
         bulk = [
                 {'id':'1', 'widget_name':'nopechucktesta', 'args':['one', 'two'], 'kwargs':{}}
         ]
-        self.router.route(None, bulk)
+        self.router.route(self.request, bulk)
         response = json.loads(http_response.call_args[0][0])
         self.assertEquals(response[0]['status'], 'WidgetNotFound')
 
@@ -98,7 +99,7 @@ class TestBaseView(TestCase):
     def test_base_no_use_cache(self):
         self.base.use_cache = False
         self.base('request', 'arg', kwarg='kwval')
-        self.base.uncacheable.assert_called_with('request', {},  'arg', kwarg='kwval')
+        self.base.uncacheable.assert_called_with('request', {'context':dict(),'template':'some_template'},  'arg', kwarg='kwval')
         self.assertFalse(self.base.cacheable.called)
 
     @mock.patch('marimo.views.base.cache')
