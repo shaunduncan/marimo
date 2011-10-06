@@ -44,7 +44,16 @@ class BaseWidget(object):
         Generates the cache key that this widget will use based on  *args and **kwargs
         """
         raise NotImplementedError
-    
+
+    def get_cache(self, *args, **kwargs):
+        """ get current cached cacheable part """
+        cache_key = self.cache_key(*args, **kwargs)
+        response = cache.get(cache_key)
+        if response is None:
+            response = {'template':self.template, 'context':dict()}
+            response = self.update_cache(response, *args, **kwargs)
+        return response
+
     def update_cache(self, response, *args, **kwargs):
         """ call this with *args and **kwargs like a request to update the cache """
         cache_key = self.cache_key(*args, **kwargs)
@@ -66,11 +75,7 @@ class BaseWidget(object):
         """
 
         if self.use_cache:
-            cache_key = self.cache_key(*args, **kwargs)
-            response = cache.get(cache_key)
-            if response is None:
-                response = {'template':self.template, 'context':dict()}
-                response = self.update_cache(response, *args, **kwargs)
+            response = self.get_cache(*args, **kwargs)
         else:
             response = {'template':self.template, 'context':dict()}
 
