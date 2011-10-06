@@ -1,32 +1,50 @@
 // TODO don't assume jquery
 // TODO don't assume JSON
 // TODO fix indentation
+
+// this is a base widget that knows nothing about requests
 var widget = {
     init: function(data) {
         this.id = data.id;
-        // TODO write
-        this.args = data;
-        this.data = {};
+        this.data = data;
+        // TODO more stuff for requestful and/or websocket
+        // now getting data up front, not waiting to update (the
+        // requestful/websocket ones will)
+        // this.args = data;
+        setTimeout(this.render, 1);
         return this;
     },
-    update: function(data) {
-        // merge data with this's
-        // TODO make this proper update, for now overwrite
-        this.data = data;
-        this.render();
-        // TODO future excitement
-    },
+    // TODO will need this for requestful/websocket
+    //update: function(data) {
+    //    // merge data with this's
+    //    // TODO make this proper update, for now overwrite
+    //    this.data = data;
+    //    this.render();
+    //    // TODO future excitement
+    //},
     render: function() {
-        var that = this;
-        // TODO support a template_url
-        // TODO make not-mustache-specific
-        var html = Mustache.to_html(that.data.template, that.data.context);
-        marimo.$(function() {
-            // Actually modify the DOM. note that this is the only time we care about onready.
-            marimo.$('#'+that.id).html(html);
-        });
+        // TODO what, if anything, should go here for base widget?
+        // TODO what is below should end up in requestful widget
+        //var that = this;
+        //// TODO support a template_url
+        //// TODO make not-mustache-specific
+        //var html = Mustache.to_html(that.data.template, that.data.context);
+        //marimo.$(function() {
+        //    // Actually modify the DOM. note that this is the only time we care about onready.
+        //    marimo.$('#'+that.id).html(html);
+        //});
+    },
+    on: function(evnt, cb) {
+        if (marimo.events[evnt]) {
+             cb.call(this);
+             return;
+        }
+        marimo.$(document).bind(evnt, function() { cb.call(this); })
     }
 };
+
+// TODO batchrequesting widget
+// TODO websocket widget
 
 function BatchRequest(url) {
     this.payloads = [];
@@ -56,29 +74,18 @@ function Marimo($) {
     this.requests = {};
     this.widgets = {};
     this.widgets_in = 0;
+    this.events ={};
     this.$ = $;
 }
 
 Marimo.prototype.add_widget = function(widget_args) {
-    // TODO lock request objs while they are making a request
-    this.widgets_in++;
-    var that = this;
-    setTimeout(function() {
-        var url = widget_args.murl;
-        if (!that.requests[url]) {
-            that.requests[url] = new BatchRequest(url);
-        }
-        that.requests[url].add(widget_args);
-        // TODO please fucking namespace marimo shit for the love of god
-        var widget_prototype = window[widget_args['widget_prototype']];
-        if (!widget_prototype) {
-            widget_prototype = widget;
-        }
-        // TODO delete constructor arg from widget_args?
-        var w = Object.create(widget_prototype).init(widget_args);
-        that.widgets[w.id] = w;
-        that.widgets_in--;
-   }, 1);
+   var widget_prototype = window[widget_args['widget_prototype']];
+   if (!widget_prototype) {
+       widget_prototype = widget;
+   }
+   var w = Object.create(widget_prototype);
+   this.widgets[w.id] = w;
+   this.widgets[w.id].init(widget_args);
 };
 
 Marimo.prototype.add_widgets = function(widgets) {
@@ -110,6 +117,11 @@ Marimo.prototype.handle_response = function(url, data) {
         this.widgets[widget_data.id].update(widget_data);
     }
     // tell widgets to update based on what is in data.
+};
+
+Marimo.prototype.fire = function(evnt) {
+    this.events[evnt] = true;
+    this.$(document).trigger(evnt);
 };
 
 var marimo = new Marimo();
