@@ -11,7 +11,8 @@ var widget = {
         // now getting data up front, not waiting to update (the
         // requestful/websocket ones will)
         // this.args = data;
-        setTimeout(this.render, 1);
+        var that = this;
+        setTimeout(function() { that.render.call(that) }, 1);
         return this;
     },
     // TODO will need this for requestful/websocket
@@ -80,15 +81,18 @@ function Marimo($) {
 
 Marimo.prototype.add_widget = function(widget_args) {
    var widget_prototype = window[widget_args['widget_prototype']];
+   console.log('TRYING TO ADD WIDGET WITH ID '+ widget_args['id']);
+   console.log('GOT WIDGET_PROTOTYPE: ' + widget_args['widget_prototype']);
    if (!widget_prototype) {
        widget_prototype = widget;
    }
    var w = Object.create(widget_prototype);
-   this.widgets[w.id] = w;
-   this.widgets[w.id].init(widget_args);
+   this.widgets[widget_args.id] = w;
+   this.widgets[widget_args.id].init(widget_args);
 };
 
 Marimo.prototype.add_widgets = function(widgets) {
+    console.log(widgets);
     for (var key in widgets) {
         if (!widgets.hasOwnProperty(key)){return;}
         this.add_widget(widgets[key]);
