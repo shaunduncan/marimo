@@ -12,14 +12,14 @@ register = template.Library()
 def marimo(parser, token):
     """
         Syntax::
-            {% marimo widget_name [murl=http://some.url.com] [args] [kwargs] %}
+            {% marimo widget_name widget_class [murl=http://some.url.com] [args] [kwargs] %}
 
         Examples::
-            {% marimo comments objectpk=23 %}
+            {% marimo comments request_widget objectpk=23 %}
     """
     tokens = token.split_contents()
-    if len(tokens) < 2:
-        raise template.TemplateSyntaxError('Need at least a widget name')
+    if len(tokens) < 3:
+        raise template.TemplateSyntaxError('Need at least a widget_name and widget_class')
 
     tokens.pop(0)
     widget_name = tokens.pop(0)
