@@ -126,7 +126,7 @@ Marimo.prototype.handle_response = function(url, data) {
     // tell widgets to update based on what is in data.
 };
 
-Marimo.prototype.fire = function(evnt) {
+Marimo.prototype.emit = function(evnt) {
     this.events[evnt] = true;
     this.$(document).trigger(evnt);
 };
