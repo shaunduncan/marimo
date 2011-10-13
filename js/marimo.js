@@ -27,8 +27,6 @@ var marimo = {
     // `this.widgets`
     add_widget: function add_widget(widget_args) {
        var widget_prototype = this.widgetlib[widget_args['widget_prototype']];
-       console.log('TRYING TO ADD WIDGET WITH ID '+ widget_args['id']);
-       console.log('GOT WIDGET_PROTOTYPE: ' + widget_args['widget_prototype']);
        if (!widget_prototype) {
            widget_prototype = this.widgetlib.base_widget;
        }
@@ -38,7 +36,6 @@ var marimo = {
     },
     // a simple wrapper around `this.add_widget()`
     add_widgets: function add_widgets(widgets) {
-        console.log(widgets);
         for (var key in widgets) {
             if (!widgets.hasOwnProperty(key)){return;}
             this.add_widget(widgets[key]);
@@ -155,8 +152,37 @@ marimo.widgetlib.request_widget.render = function() {
     });
 };
 
+// a widget for handling html with potentially horrible javascript. note
+// that this is not requestful.
+marimo.widgetlib.writecapture_widget = Object.create(marimo.widgetilb.base_widget);
+marimo.widgetlib.writecapture_widget.init = function init(data) {
+    var that = widget.init.call(this, data);
+    setTimeout(function() { that.render.call(that) }, 1);
+    return that;
+}
+marimo.widgetlib.writecapture_widget.render = function render() {
+    var that = this;
+    this.on(this.id+'_ready', function() {
+        marimo.$('#'+that.id).writeCapture().html(that.decode(that.data.html));
+    });
+};
+marimo.widgetlib.writecapture_widget.decode = function decode(html) {
+    // **TODO** this is nonsense. but necessary.
+    html = html.replace(/`/g, '<');
+    html = html.replace(/~/g, '>');
+    return html;
+}
+
+// a writecapture widget that waits for doc.ready to render
+marimo.widgetlib.onready_widget = Object.create(marimo.widgetlib.writecapture_widget);
+marimo.widgetlib.onready_widget.render = function render() {
+    var that = this;
+    marimo.$(function() {
+        marimo.widgetlib.writecapture_widget.render.call(that);
+    });
+};
+
 // **TODO** websocket widget
 // **TODO** don't assume jquery
 // **TODO** don't assume JSON
 // **TODO** fix indentation
-
