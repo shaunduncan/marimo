@@ -7,34 +7,10 @@ var widget = {
     init: function(data) {
         this.id = data.id;
         this.data = data;
-        // TODO more stuff for requestful and/or websocket
-        // now getting data up front, not waiting to update (the
-        // requestful/websocket ones will)
-        // this.args = data;
-        var that = this;
-        setTimeout(function() { that.render.call(that) }, 1);
         return this;
     },
-    // TODO will need this for requestful/websocket
-    //update: function(data) {
-    //    // merge data with this's
-    //    // TODO make this proper update, for now overwrite
-    //    this.data = data;
-    //    this.render();
-    //    // TODO future excitement
-    //},
-    render: function() {
-        // TODO what, if anything, should go here for base widget?
-        // TODO what is below should end up in requestful widget
-        //var that = this;
-        //// TODO support a template_url
-        //// TODO make not-mustache-specific
-        //var html = Mustache.to_html(that.data.template, that.data.context);
-        //marimo.$(function() {
-        //    // Actually modify the DOM. note that this is the only time we care about onready.
-        //    marimo.$('#'+that.id).html(html);
-        //});
-    },
+    update: function(data) { },
+    render: function() { },
     on: function(evnt, cb) {
         if (marimo.events[evnt]) {
              cb.call(this);
@@ -44,7 +20,34 @@ var widget = {
     }
 };
 
-// TODO batchrequesting widget
+// this is a requestful widget that uses network calls to get templates/info to render
+var request_widget = Object.create(widget);{
+request_widget.init = function(data) {
+    this.id = data.id;
+    this.data = data;
+    return this;
+};
+request_widget.update = function(data) {
+    // merge data with this's
+    for (var key in data) {
+        if (!data.hasOwnProperty(key)) { return; }
+        this.data[key] = data;
+    }
+    this.render();
+    // TODO future excitement
+};
+request_widget.render = function() {
+    // TODO support a template_url
+    // TODO make not-mustache-specific
+    var html = Mustache.to_html(this.data.template, this.data.context);
+
+    var that = this;
+    marimo.$(function() {
+        // Actually modify the DOM. note that this is the only time we care about onready.
+        marimo.$('#'+that.id).html(html);
+    });
+};
+
 // TODO websocket widget
 
 function BatchRequest(url) {
