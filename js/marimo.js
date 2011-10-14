@@ -120,14 +120,14 @@ marimo.widgetlib.base_widget = {
 marimo.widgetlib.request_widget = Object.create(marimo.widgetlib.base_widget);
 marimo.widgetlib.request_widget.init = function(data) {
     this.id = data.id;
-    this.url = data.url;
+    this.murl = data.murl;
     this.data = data;
     this.add_request();
     return this;
 };
 marimo.widgetlib.request_widget.add_request = function add_request() {
     if (!marimo.requests[this.url]) {
-        marimo.requests[this.url] = Object.create(marimo.batch_request).init(this.url);
+        marimo.requests[this.url] = Object.create(marimo.batch_request).init(this.murl);
     }
     marimo.requests[this.url].add(this.data);
 };
@@ -135,7 +135,7 @@ marimo.widgetlib.request_widget.update = function(data) {
     // merge data with this's
     for (var key in data) {
         if (!data.hasOwnProperty(key)) { return; }
-        this.data[key] = data;
+        this.data[key] = data[key];
     }
     // this will do more interesting things in the future.
     this.render();
