@@ -12,17 +12,18 @@ register = template.Library()
 def marimo(parser, token):
     """
         Syntax::
-            {% marimo widget_name [murl=http://some.url.com] [args] [kwargs] %}
+            {% marimo widget_name prototype [murl=http://some.url.com] [args] [kwargs] %}
 
         Examples::
-            {% marimo comments objectpk=23 %}
+            {% marimo comments request_widget objectpk=23 %}
     """
     tokens = token.split_contents()
-    if len(tokens) < 2:
-        raise template.TemplateSyntaxError('Need at least a widget name')
+    if len(tokens) < 3:
+        raise template.TemplateSyntaxError('Need at least a widget_name and widget prototype')
 
     tokens.pop(0)
     widget_name = tokens.pop(0)
+    prototype = tokens.pop(0)
     args = []
     kwargs = {}
 
@@ -35,11 +36,12 @@ def marimo(parser, token):
         else:
             raise template.TemplateSyntaxError('Arguments cannot contain =')
 
-    return MarimoNode(widget_name, args, kwargs)
+    return MarimoNode(widget_name, prototype, args, kwargs)
 
 class MarimoNode(template.Node):
-    def __init__(self, widget_name, args, kwargs):
+    def __init__(self, widget_name, prototype, args, kwargs):
         self.widget_name = widget_name
+        self.prototype = prototype
         self.args = args
         self.kwargs = kwargs
 

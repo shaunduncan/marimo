@@ -167,9 +167,7 @@ marimo.widgetlib.writecapture_widget.render = function render() {
     });
 };
 marimo.widgetlib.writecapture_widget.decode = function decode(html) {
-    // **TODO** this is nonsense. but necessary.
-    html = html.replace(/`/g, '<');
-    html = html.replace(/~/g, '>');
+    html = html.replace(/\$ENDSCRIPT/g, "</script>");
     return html;
 }
 
