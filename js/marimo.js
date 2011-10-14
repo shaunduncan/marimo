@@ -154,7 +154,7 @@ marimo.widgetlib.request_widget.render = function() {
 
 // a widget for handling html with potentially horrible javascript. note
 // that this is not requestful.
-marimo.widgetlib.writecapture_widget = Object.create(marimo.widgetilb.base_widget);
+marimo.widgetlib.writecapture_widget = Object.create(marimo.widgetlib.base_widget);
 marimo.widgetlib.writecapture_widget.init = function init(data) {
     var that = widget.init.call(this, data);
     setTimeout(function() { that.render.call(that) }, 1);
