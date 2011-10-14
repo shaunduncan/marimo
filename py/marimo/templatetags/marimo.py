@@ -66,6 +66,7 @@ class MarimoNode(template.Node):
         data['widget_name'] = self.widget_name
         data['id'] = self.generate_id()
         data['murl'] = murl
+        data['widget_prototype'] = self.prototype
 
         divstr = '<div id="{id}" class="{cls}"></div>'.format(
            cls = getattr(settings, 'MARIMO_CLASS', 'marimo class'),
