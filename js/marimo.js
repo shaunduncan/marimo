@@ -129,7 +129,7 @@ marimo.widgetlib.request_widget.add_request = function add_request() {
     if (!marimo.requests[this.murl]) {
         marimo.requests[this.murl] = Object.create(marimo.batch_request).init(this.murl);
     }
-    marimo.requests[this.url].add(this.data);
+    marimo.requests[this.murl].add(this.data);
 };
 marimo.widgetlib.request_widget.update = function(data) {
     // merge data with this's
