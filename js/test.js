@@ -5,8 +5,8 @@ setTimeout = function(fun) { fun(); };
 
 
 var testcase = {
-    tests: [],
     add: function add(testfun) {
+        if (!this.tests) { this.tests = []; }
         this.tests.push(testfun);
     },
     run: function run() {
