@@ -16,11 +16,11 @@ class TestWidget(BaseWidget):
     def cache_key(self, *args, **kwargs):
         return 'test_widget:%s' % args[0]
 
-    def cacheable(self, context, *args, **kwargs):
-        context['name'] = args[0]
-        context['status'] = 'blue'
-        return context
+    def cacheable(self, response, *args, **kwargs):
+        response['context']['name'] = args[0]
+        response['context']['status'] = 'blue'
+        return response
 
-    def uncacheable(self, request, context, *args, **kwargs):
-        context['action'] = args[1]
-        return context
+    def uncacheable(self, request, response, *args, **kwargs):
+        response['context']['action'] = args[1]
+        return response
