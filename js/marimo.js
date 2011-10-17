@@ -143,9 +143,8 @@ marimo.widgetlib.request_widget.update = function(data) {
 marimo.widgetlib.request_widget.render = function() {
     // **TODO** support a template_url
     // **TODO** make not-mustache-specific
-    // TODO context should be separate:
     //var html = Mustache.to_html(this.data.template, this.data.context);
-    var html = Mustache.to_html(this.data.template, this.data);
+    var html = Mustache.to_html(this.data.template, this.data.context);
 
     var that = this;
     marimo.$(function() {
