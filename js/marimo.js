@@ -70,8 +70,8 @@ var marimo = {
 };
 
 marimo.batch_request = {
-    payloads: [],
     init: function init(url) {
+        this.payloads = [];
         this.url = url;
         return this;
     },
