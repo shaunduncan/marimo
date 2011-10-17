@@ -126,8 +126,8 @@ marimo.widgetlib.request_widget.init = function(data) {
     return this;
 };
 marimo.widgetlib.request_widget.add_request = function add_request() {
-    if (!marimo.requests[this.url]) {
-        marimo.requests[this.url] = Object.create(marimo.batch_request).init(this.murl);
+    if (!marimo.requests[this.murl]) {
+        marimo.requests[this.murl] = Object.create(marimo.batch_request).init(this.murl);
     }
     marimo.requests[this.url].add(this.data);
 };
