@@ -52,9 +52,8 @@ var testcase = {
 
 var marimo_obj_tc = Object.create(testcase);
 
-// test the base widget; it doesn't do much
-
-// XXX **TODO**
+// TODO should we bother testing the base widget? it doesn't do much and is
+// really only there to be fed to Object.create().
 
 // test the request_widget.
 
@@ -130,4 +129,37 @@ marimo_obj_tc.add(function test_handle_response(testcase) {
     assert.equal(div2text, 'is the sky alphabetical?', 'html for div 2 is appropriate');
 });
 
+marimo_obj_tc.add(function test_emit(testcase) {
+    var marimo = testcase.window.marimo;
+    var event_fired = false;
+    marimo.$(testcase.window.document).bind('test_event', function() { event_fired = true; });
+    marimo.emit('test_event');
+    assert.equal(marimo.events['test_event'], true, 'event firing was registered');
+    assert.ok(event_fired, 'event was fired');
+});
+
+// TODO maybe this shouldn't be in this tc obj but eh
+marimo_obj_tc.add(function test_on(testcase) {
+    var marimo = testcase.window.marimo;
+    // just use base widget
+    marimo.add_widget({ id:'1' });
+    var event_caught = false;
+    marimo.widgets['1'].on('test_on', function() {
+        event_caught = true;
+    });
+    marimo.emit('test_on');
+    assert.ok(event_caught, 'test_on event was caught');
+});
+
 marimo_obj_tc.run();
+
+
+// test writecapture widget
+var wc_widget_tc = Object.create(testcase);
+
+wc_widget_tc.add(function test_init(testcase) {
+    var marimo = testcase.window.marimo;
+    assert.ok(false, 'TODO write this test');
+});
+
+wc_widget_tc.run();
