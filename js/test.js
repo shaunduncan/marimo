@@ -34,8 +34,16 @@ var testcase = {
 
                     window.marimo.init(window.$);
 
-                    test(testcase);
-                    console.log('.');
+                    try {
+                        test(testcase);
+                        console.log('✓ '+test.name);
+                    }
+                    catch (e) {
+                        console.log('x '+test.name);
+                        if (e.message) {
+                            console.log('\t'+e.message);
+                        }
+                    }
                 }
             );
         }, this);
