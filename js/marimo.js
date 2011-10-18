@@ -157,7 +157,8 @@ marimo.widgetlib.request_widget.render = function() {
 // that this is not requestful.
 marimo.widgetlib.writecapture_widget = Object.create(marimo.widgetlib.base_widget);
 marimo.widgetlib.writecapture_widget.init = function init(data) {
-    var that = widget.init.call(this, data);
+    // TODO should this hard-inherit from basewidget here? prob not?
+    var that = marimo.widgetlib.base_widget.init.call(this, data);
     setTimeout(function() { that.render.call(that) }, 1);
     return that;
 }

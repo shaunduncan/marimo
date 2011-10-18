@@ -157,15 +157,20 @@ marimo_obj_tc.run();
 // test writecapture widget
 var wc_widget_tc = Object.create(testcase);
 
-wc_widget_tc.add(function test_init(testcase) {
+wc_widget_tc.add(function test_decode(testcase) {
     var marimo = testcase.window.marimo;
-    assert.ok(false, 'TODO write this test');
     var wcwidg = Object.create(marimo.widgetlib.writecapture_widget);
-    // call init
-    // emit id_ready
-    // assert that writecapture got called
+    var html = [
+        '<head>',
+        '<puke></puke>',
+        '</head>',
+        '<script>',
+        '$ENDSCRIPT',
+        'some junk'
+    ].join('\n');
+    var newhtml = wcwidg.decode(html);
+    assert.ok(!newhtml.match(/\$ENDSCRIPT/g), 'do not see $ENDSCRIPT');
+    assert.ok(newhtml.match(/<\/script>/g), 'do see </script>');
 });
-
-// test decode
 
 wc_widget_tc.run();
