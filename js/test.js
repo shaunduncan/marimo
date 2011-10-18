@@ -160,6 +160,12 @@ var wc_widget_tc = Object.create(testcase);
 wc_widget_tc.add(function test_init(testcase) {
     var marimo = testcase.window.marimo;
     assert.ok(false, 'TODO write this test');
+    var wcwidg = Object.create(marimo.widgetlib.writecapture_widget);
+    // call init
+    // emit id_ready
+    // assert that writecapture got called
 });
+
+// test decode
 
 wc_widget_tc.run();

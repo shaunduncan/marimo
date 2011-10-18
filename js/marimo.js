@@ -1,6 +1,6 @@
 // ## marimo is a library for self-aware, self-updating, and self-rendering HTML widgets.
 
-// marimo is a flexible javascript library that...
+// marimo is a flexible javascript library that... TODO
 
 // ### namespace
 // this namespace stores the general marimo state (widget requests, live
