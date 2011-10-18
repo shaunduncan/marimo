@@ -11,9 +11,17 @@ import mock
 from marimo.views import MarimoRouter
 from marimo.views import BaseWidget
 
+class FailingWidget(object):
+    def __call__(self, request, *args, **kwargs):
+        raise Exception
+
+    def on_error(e, data, request, *args, **kwargs):
+        return {'status':'failed'}
+
+
 widgets = {
         'test': lambda x,y,z: {'key':'value'},
-        'failure': lambda x,y: 1
+        'failure': FailingWidget()
 }
 
 class TestTag(TestCase):
