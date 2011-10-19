@@ -1,4 +1,4 @@
-// ## marimo is a library for self-aware, self-updating, and self-rendering HTML widgets.
+// # marimo is a library for self-aware, self-updating, and self-rendering HTML widgets.
 
 // marimo is a flexible javascript library that... TODO
 
@@ -26,13 +26,22 @@ var marimo = {
     widgets: {},
     // an event registry for tracking events that have occurred
     events: {},
-    // #### init
+    // ### init
     // this is an idiom you will see throughout marimo. `init` is kind of like
     // a constructor, but don't think about it that way. it is used to set up
     // some kind of runtime state for an object. in this case, it's used to set
     // a js lib object (probably jQuery, but also possibly Ender or xuijs)
+    // #### note
+    // currently $ is assumed to have the following interface:
+    //   $() // selector
+    //   $.ajax(settings)
+    //   $().bind()
+    //   $().trigger()
+    //   $(function() {}) // onready callback
+    // this is obviously just jquery.
     init: function init($) {
         this.$ = $;
+        // **TODO** write an adaptor that maps from {jquery,xuijs,etc} to a generic $ object
         return this;
     },
     // given data about a widget that should exist, create it and add it to
@@ -53,7 +62,7 @@ var marimo = {
             this.add_widget(widgets[key]);
         }
     },
-    // #### make_request
+    // ### make_request
     // this is a bulk method for having all curent batch requests
     // (in `this.requests`) make their AJAX calls. It sets up
     // `this.handle_response()` to deal with the returned JSON.
@@ -81,6 +90,10 @@ var marimo = {
     }
 };
 
+// ## batch_request
+// this object represents a single URL from which some number of widgets will
+// request templates and template context. It is here to synchronize and bulk
+// multiple requests to the same endpoint.
 marimo.batch_request = {
     init: function init(url) {
         this.payloads = [];
@@ -93,6 +106,7 @@ marimo.batch_request = {
     },
     make_request: function make_request(cb) {
        var that = this;
+       // **TODO** retries? better error callback?
        marimo.$.ajax({
          url: this.url,
          data: {bulk:JSON.stringify(this.payloads)},
@@ -105,10 +119,11 @@ marimo.batch_request = {
     }
 };
 
-// ### the widgetlib
+// ## the widgetlib
 // widgetlib holds raw objects that can be used with Object.create().
 marimo.widgetlib = {};
 
+// ### base_widget
 // this is a base widget that knows nothing about requests. you probably should
 // only be inheriting from it.
 marimo.widgetlib.base_widget = {
@@ -117,8 +132,13 @@ marimo.widgetlib.base_widget = {
         this.data = data;
         return this;
     },
+    // no-op
     update: function(data) { },
+    // no-op
     render: function() { },
+    // set up an event listener. such events will be later emitted by marimo.
+    // check to see if designated event has already been emitted so we can fire
+    // synchronously.
     on: function(evnt, cb) {
         if (marimo.events[evnt]) {
              cb.call(this);
@@ -128,7 +148,9 @@ marimo.widgetlib.base_widget = {
     }
 };
 
-// this is a requestful widget that uses network calls to get templates/info to render
+// ### request_widget
+// this is a requestful widget that uses network calls to get templates/info to
+// render. it funnels requests through batch_request objects.
 marimo.widgetlib.request_widget = Object.create(marimo.widgetlib.base_widget);
 marimo.widgetlib.request_widget.init = function(data) {
     this.id = data.id;
@@ -137,6 +159,8 @@ marimo.widgetlib.request_widget.init = function(data) {
     this.add_request();
     return this;
 };
+// this is a separate method so it can be called repeatedly. we're not doing
+// that yet.
 marimo.widgetlib.request_widget.add_request = function add_request() {
     if (!marimo.requests[this.murl]) {
         marimo.requests[this.murl] = Object.create(marimo.batch_request).init(this.murl);
@@ -153,23 +177,24 @@ marimo.widgetlib.request_widget.update = function(data) {
     this.render();
 };
 marimo.widgetlib.request_widget.render = function() {
-    // **TODO** support a template_url
+    // **TODO** support a template_url (distinct from data api)
     // **TODO** make not-mustache-specific
-    //var html = Mustache.to_html(this.data.template, this.data.context);
     var html = Mustache.to_html(this.data.template, this.data.context);
 
     var that = this;
     marimo.$(function() {
         // Actually modify the DOM. note that this is the only time we care about onready.
+        // **TODO** could instead use this.id+'_ready' event like writecapture_widget
         marimo.$('#'+that.id).html(html);
     });
 };
 
+// ### writecapture_widget
 // a widget for handling html with potentially horrible javascript. note
 // that this is not requestful.
 marimo.widgetlib.writecapture_widget = Object.create(marimo.widgetlib.base_widget);
 marimo.widgetlib.writecapture_widget.init = function init(data) {
-    // TODO should this hard-inherit from basewidget here? prob not?
+    // **TODO** should this hard-inherit from base_widget here? prob not?
     var that = marimo.widgetlib.base_widget.init.call(this, data);
     setTimeout(function() { that.render.call(that) }, 1);
     return that;
@@ -180,11 +205,14 @@ marimo.widgetlib.writecapture_widget.render = function render() {
         marimo.$('#'+that.id).writeCapture().html(that.decode(that.data.html));
     });
 };
+// yeah this hurts. this is for html that is in JSON that is staticly put on
+// pages (like, oh, say, for ads). browsers will pick up on the </script> and
+// blow up.
 marimo.widgetlib.writecapture_widget.decode = function decode(html) {
-    html = html.replace(/\$ENDSCRIPT/g, "</script>");
-    return html;
+    return html.replace(/\$ENDSCRIPT/g, "</script>");
 }
 
+// ### onready_widget
 // a writecapture widget that waits for doc.ready to render
 marimo.widgetlib.onready_widget = Object.create(marimo.widgetlib.writecapture_widget);
 marimo.widgetlib.onready_widget.render = function render() {
@@ -197,4 +225,5 @@ marimo.widgetlib.onready_widget.render = function render() {
 // **TODO** websocket widget
 // **TODO** don't assume jquery
 // **TODO** don't assume JSON
+// **TODO** roll writecapture and mustache into our generalized $
 // **TODO** fix indentation

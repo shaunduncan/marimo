@@ -1,8 +1,19 @@
+// # marimo tests
+// this is a combination test suite / test runner for marimo. it relies on nodejs.
+// at a high level, we're bootstrapping marimo.js (along with jquery and
+// mustache) with jsdom for every test we want to run. we collect tests up into
+// testcase objects and they can run in isolation in any order; each test gets
+// a private window object.
+
+// ## why?
+// we didn't like existing unit test libraries for browser-side js. i have no
+// interest in running my tests **in a browser**. i want to run them from the
+// command line like other unit tests. our hope is to roll this bootstrapping
+// technique into node-unit to avoid having to maintain our own test runner.
 var assert = require('assert');
 var jsdom = require('jsdom');
 
 setTimeout = function(fun) { fun(); };
-
 
 var testcase = {
     add: function add(testfun) {
