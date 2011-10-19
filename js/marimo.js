@@ -1,6 +1,13 @@
 // # marimo is a library for self-aware, self-updating, and self-rendering HTML widgets.
+// it provides a variety of javascript objects that can ask for data and
+// intelligently render themselves. These widgets are intended to be extended
+// by application developers. Marimo is being developed at Cox Media Group
+// Digital for rendering advertisements, comment threads, and various
+// "real-time" widgets such as weather reports and radio "now playing"
+// displays  Our hope is to provide a generic framework to replace the many
+// one-off ajax->backend view hacks that tend to grow on modern web
+// applications.
 
-// marimo is a flexible javascript library that... TODO
 
 // polyfill for Object.create, sadly
 if (!Object.create) {
@@ -17,7 +24,7 @@ if (!Object.create) {
 // ## namespace / object
 // this namespace stores the general marimo state (widget requests, live
 // widgets, an event registry), acts as an event transport for widgets, and
-// houses "widgetlib," a collection of widgets that can either be used or
+// houses "widgetlib," a collection of widgets that can either be used ori
 // differentially inherited from.
 var marimo = {
     // batch request objects that widgets use to get fresh data about themselves
@@ -33,11 +40,7 @@ var marimo = {
     // a js lib object (probably jQuery, but also possibly Ender or xuijs)
     // #### note
     // currently $ is assumed to have the following interface:
-    //   $() // selector
-    //   $.ajax(settings)
-    //   $().bind()
-    //   $().trigger()
-    //   $(function() {}) // onready callback
+    // $(), $.ajax(settings), $().bind(), $().trigger(), $(function() {}).
     // this is obviously just jquery.
     init: function init($) {
         this.$ = $;
