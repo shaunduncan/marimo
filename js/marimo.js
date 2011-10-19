@@ -2,7 +2,19 @@
 
 // marimo is a flexible javascript library that... TODO
 
-// ### namespace
+// polyfill for Object.create, sadly
+if (!Object.create) {
+    Object.create = function (o) {
+        if (arguments.length > 1) {
+            throw new Error('Object.create implementation only accepts the first parameter.');
+        }
+        function F() {}
+        F.prototype = o;
+        return new F();
+    };
+}
+
+// ## namespace / object
 // this namespace stores the general marimo state (widget requests, live
 // widgets, an event registry), acts as an event transport for widgets, and
 // houses "widgetlib," a collection of widgets that can either be used or
