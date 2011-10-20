@@ -11,7 +11,7 @@ A marimo installation consists of three parts:
 
 1) A page that contains marimo widgets
 
-2) Javasctipt that manages and loads widgets in the page
+2) Javascript that manages and loads widgets in the page
 
 3) A backend api that provides widgets with the templates and context for them to use in rendering
 
@@ -27,12 +27,13 @@ Contents:
 .. toctree::
    :maxdepth: 2
 
-   marimo
+   html
+   javascript
+   backend
 
 Indices and tables
 ==================
 
 * :ref:`genindex`
-* :ref:`modindex`
 * :ref:`search`
 
