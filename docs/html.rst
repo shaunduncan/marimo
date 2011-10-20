@@ -7,7 +7,9 @@ are added their init method will be called  This should be responsible for
 asking for data, rendering templates, and doing whatever else from this point
 on the widget needs to do to be useful. The div where the widget should render
 itself should have the unique id for that widget which is up to the developer
-to choose. ::
+to choose.
+
+.. code-block:: xml
 
     <html>
     <head>

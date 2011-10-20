@@ -5,7 +5,7 @@
 
 marimo: a fast framework for realtime widget rendering
 ======================================================
-marimo is a framework for creating asynchronously loading widgets.
+marimo is a framework for creating asynchronously loading widgets being developed at Cox Media Group Digital. It is intented to unify javascript code for ajax widgets
 
 A marimo installation consists of three parts:
 
