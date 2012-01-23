@@ -4,7 +4,7 @@
 marimo is a library for self-aware, nonblocking, and interactive
 javascript widgets. It strives to leave as much as possible to the
 application developer and to be more of a starting point for
-customized widgets that fulfill specifc needs. It is not a
+customized widgets that fulfill specific needs. It is not a
 kitchen-sink library nor a UI library: it's more of a toolset.
 
 marimo is still evolving. it's currently used in big ways in production at Cox
