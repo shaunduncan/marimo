@@ -27,6 +27,7 @@ considered a WIP.
     var tweets = marimo.widgets.tweets
     tweets.make_request()
 
+More robust (and functional) examples can be found in the [marimodemo repository](http://github.com/nathanielksmith/marimodemo).
 ### default widgets
 
 marimo provides three widgets that you can use or extend:
