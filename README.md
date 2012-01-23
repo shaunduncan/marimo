@@ -32,11 +32,14 @@ considered a WIP.
 marimo provides three widgets that you can use or extend:
 
 * base\_widget
+
         the mother widget. all widgets extend from here.
 * request\_widget
+
         a widget that asks for data from a server and renders it with a
         mustache template
 * writecapture\_widget
+
         a widget that accepts dirty, third party html and sanitizes it so it
         can be rendered in a nonblocking fashion
 
@@ -80,7 +83,7 @@ Digital & Strategy. It is licensed under the terms of the MIT license.
 
 ### contributors
 
-manny blum
-calvin spealman
-rob combs
-cliff hayashida
+* manny blum
+* calvin spealman
+* rob combs
+* cliff hayashida
