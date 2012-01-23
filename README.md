@@ -77,9 +77,16 @@ request\_widgets can either take properly formatted json in this form:
 or accept arbitrary data. define a transform method in an extended request
 widget to massage incoming json (see the twitter example above).
 
+### documentation
+
+[marimo.js](https://github.com/coxmediagroup/marimo/blob/master/lib/marimo.js) is fully documented
+with a pseudo-docstring format. [marimodemo](http://github.com/nathanielksmith/marimodemo) contains examples. The stuff in lib/docs should be
+considered highly deprecated; it will be deleted soon. Wiki pages and more examples (and probably a homepage)
+are TODOs at this point.
+
 ### meta
 
-marimo was written by Nathaniel Smith and Alex Dreyer for Cox Media Group
+marimo was written by Nathaniel Smith (<mailto:nathanielksmith@gmail.com>) and Alex Dreyer for Cox Media Group
 Digital & Strategy. It is licensed under the terms of the MIT license.
 
 ### contributors
