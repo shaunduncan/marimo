@@ -91,6 +91,7 @@ Digital & Strategy. It is licensed under the terms of the MIT license.
 
 ### contributors
 
+* datagrok
 * manny blum
 * calvin spealman
 * rob combs
