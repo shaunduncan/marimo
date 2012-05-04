@@ -1,4 +1,4 @@
-var jsdom_wrapper = require('./test.common.js').jsdom_wrapper
+var jsdom_wrapper = require('./util.test.js').jsdom_wrapper
 
 exports.test_jsdom_bootstrap = {
     setUp: jsdom_wrapper(),

@@ -6,9 +6,9 @@ exports.jsdom_wrapper = function(html) {
         var testcase = this
         jsdom.env(html,
             [
-                './jquery-1.6.4.js',
-                './mustache.js',
-                './marimo.js'
+                '../lib/jquery-1.6.4.js',
+                '../lib/mustache.js',
+                '../lib/marimo.js'
             ], function(err, window) {
                 window.$.ajax = function(url, settings) {
                     var success = settings.success

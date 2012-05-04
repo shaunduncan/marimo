@@ -1,4 +1,4 @@
-var jsdom_wrapper = require('./test.common.js').jsdom_wrapper
+var jsdom_wrapper = require('./util.test.js').jsdom_wrapper
 var _ = require('underscore')
 
 setTimeout = function(fun) { fun(); }
