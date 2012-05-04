@@ -1,10 +1,8 @@
 var jsdom_wrapper = require('./util.test.js').jsdom_wrapper
-var _ = require('underscore')
 
 setTimeout = function(fun) { fun(); }
 
-
-exports.marimo_obj = {
+exports.test_marimo_obj = {
     setUp: jsdom_wrapper(),
     test_add_widget_defaults: function(test) {
         var marimo = this.window.marimo
@@ -33,98 +31,4 @@ exports.marimo_obj = {
 
         test.done()
     },
-    test_make_request: function(test) {
-        var marimo = this.window.marimo
-        var requests_made = []
-        marimo.$.ajax = function(settings) {
-            requests_made.push(settings)
-        }
-        var widget_args_list = [
-            {widget_prototype:'request_widget', murl:'/some/url0'},
-            {widget_prototype:'request_widget', murl:'/some/url1'},
-            {widget_prototype:'request_widget', murl:'/some/url1'}
-        ]
-        marimo.add_widgets(widget_args_list)
-        _.values(marimo.widgets).forEach(function(w){w.add_request()})
-
-        marimo.make_request()
-        test.equal(requests_made.length, 2, 'two requests were made')
-
-        var urls_requested = _.map(requests_made, function(r){return r.url}).sort()
-        var expected = ['/some/url0', '/some/url1']
-        test.deepEqual(urls_requested, expected, 'requests made to right urls')
-
-        test.done()
-    },
-    test_handle_response: function(test) {
-        var marimo = this.window.marimo
-        var widget_args_list = [
-            {widget_prototype:'request_widget', murl:'/some/url0', id:'one'},
-            {widget_prototype:'request_widget', murl:'/some/url1', id:'two'},
-            {widget_prototype:'request_widget', murl:'/some/url1', id:'three'}
-        ]
-        marimo.add_widgets(widget_args_list)
-        var url = '/some/url1'
-        // make some dummy data to give to handle response.
-        var data = [{
-            id:'one',
-            template:'hi {{name}}',
-            context: {name:'camus'}
-        }, {
-            id:'two',
-            template:'is the sky {{status}}?',
-            context: {status:'alphabetical'}
-        }]
-        _.each(marimo.widgets, function(v,k,l) { v.add_request() })
-        // TODO
-        marimo.handle_response(url, data)
-        test.equal(_.keys(marimo.requests).length, 1, 'requests got cleaned up for url1')
-        var div1text = marimo.$('#one').text()
-        test.equal(div1text, 'hi camus', 'html appropriate for div1')
-        var div1text = marimo.$('#two').text()
-        test.equal(div1text, 'is the sky alphabetical?', 'html appropriate for div2')
-        test.done()
-    },
-    test_emit: function(test) {
-        var marimo = this.window.marimo
-        var event_fired = false
-        marimo.$(this.window.document).bind('test_event', function() {
-            event_fired = true
-        })
-        marimo.emit('test_event')
-        test.ok(marimo.events['test_event'],true,'event firing registered')
-        test.ok(event_fired, 'event was fired')
-        test.done()
-    },
-    // should probably move this
-    test_on: function(test) {
-        var marimo = this.window.marimo
-        marimo.add_widget({id:'one'})
-        var event_caught = false
-        marimo.widgets.one.on('test_on', function() {
-            event_caught = true
-        }, marimo.widgets.one)
-        marimo.emit('test_on')
-        test.ok(event_caught, 'test_on event was caught by widget')
-
-        test.done()
-    },
-    test__onlist: function(test) {
-        var marimo = this.window.marimo
-        marimo.add_widget({id:'one'})
-        var listener_triggered = false
-        marimo.widgets.one.on(['event1', 'event2', 'event3'], function() {
-            listener_triggered = true
-        })
-        marimo.emit('event1')
-        test.equal(marimo.events['event1'], true, 'event1 registerd')
-        test.equal(listener_triggered, false, 'listener not triggered after event1')
-        marimo.emit('event2')
-        test.equal(marimo.events['event2'], true, 'event2 registerd')
-        test.equal(listener_triggered, false, 'listener not triggered after event2')
-        marimo.emit('event3')
-        test.equal(marimo.events['event3'], true, 'event3 registerd')
-        test.equal(listener_triggered, true, 'listener triggered after event3')
-        test.done()
-    }
 }
