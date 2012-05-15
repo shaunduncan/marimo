@@ -1,0 +1,19 @@
+<h1>Not valid html</h1>
+<script src="socket.io.js"> </script>
+<script src="jquery-1.6.4.js" > </script>
+<script src="mustache.js" > </script>
+<script src="marimo.js" > </script>
+<script src="realtime.js" > </script>
+
+
+<div id="rttest1"></div>
+<script>
+  marimo.init($);
+  marimo.add_widget({
+      widget_prototype: 'browsermq',
+      id: "rttest1",
+      template: '<h3>{{title}}</h3><p>{{summary}}<br/><a href="{{url}}">{{url}}</a></p>',
+      socket_path: 'http://mordechai.cei.cox.com:8000',
+      queues: ['test.queue1']
+  });
+</script>
